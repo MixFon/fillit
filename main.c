@@ -11,29 +11,31 @@
 /* ************************************************************************** */
 
 #include "libft_last_ver/libft.h"
+#include "fillit.h"
+
 
 /*
-** Создание новой чистой доски.
+** Создание новой чистой доски, размерностью nxn.
 */
 
 static char	**ft_creatboard(size_t n)
 {
-	char	**board;
+	char	**boa;
 	size_t	i;
 
 	i = 0;
-	if (!(board = (char **)malloc(sizeof(char *) * (n + 1))))
+	if (!(boa = (char **)malloc(sizeof(char *) * (n + 9))))
 		return (NULL);
 	while (i < n)
 	{
-		if (!(board[i] = (char *)malloc(sizeof(char) * (n + 1))))
+		if (!(boa[i] = (char *)malloc(sizeof(char) * (n + 1))))
 			return (NULL);
-		board[i] = (char *)ft_memset(board[i], '.', n);
-		board[i][n] = '\0';
+		boa[i] = (char *)ft_memset(boa[i], '.', n);
+		boa[i][n] = '\0';
 		i++;
 	}
-	board[i] = NULL;
-	return (board);
+	boa[i] = NULL;
+	return (boa);
 }
 
 /*
@@ -67,36 +69,186 @@ static void	ft_delboard(char **board)
 }
 
 /*
-** Помещаем тетрино на доску. Тетрино пока что задаю явно.
-**	#.
-**	##
-**	#.
+** Проверяет, может ли на данное место вставить тетримино 
 */
 
-static int	ft_infillboard(char **board, int start_x, int start_y)
+static int	ft_checktrak(char **board, int start_x, int start_y, t_tetr *tetr)
 {
-	int		tetr_x[4] = {0, 1, 0, 0};
-	int		tetr_y[4] = {0, 1, 1, 2};
 	int		i;
+	int		sum;
 
+	sum = ft_strlen(*board);
 	i = 0;
 	while (i < 4)
 	{
-		board[start_y + tetr_y[i]][start_x + tetr_x[i]] = '#';
+		if (start_y + tetr->tetr_y[i] >= sum || start_x + tetr->tetr_x[i] >= sum)
+			return (0);
+		if (board[start_y + tetr->tetr_y[i]][start_x + tetr->tetr_x[i]] != '.')
+			return (0);
 		i++;
 	}
 	return (1);
 }
 
+/*
+** Заполняет доку тeтримино 
+*/
+
+static void	ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
+{
+	int i;
+
+	i = 0;
+	while (i < 4)
+	{
+		board[start_y + tetr->tetr_y[i]][start_x + tetr->tetr_x[i]] = tetr->ch;
+		i++;
+		ft_putboard(board);
+		ft_putstr("\n");
+	}
+}
+
+/*
+** Подсчитывает площадь квадрата. 
+*/
+
+static void	ft_calkarea(char **board)
+{
+	int area; 
+
+	area = 0;
+	area = ft_strlen(*board);
+	area *= area;
+}
+
+
+/*
+**  Проходимся по всей доске и пытаемся вписать Тетримино.
+**	Тетримино пока что задаю явно.
+**	#.
+**	##
+**	#.
+*/
+
+static int	ft_infillboard(char **board, int start_x, int start_y, t_tetr *tetr)
+{
+	int		j;
+	int		i;
+	int		sum;
+
+	sum = ft_strlen(*board);
+	j = 0;
+	i = 0;
+	while (i <= sum)
+	{
+		j = 0;
+		while (j <= sum)
+		{
+			if (ft_checktrak(board, j, i, tetr))
+			{
+				ft_infilltetr(board, j, i, tetr);	
+				return (1);
+			}
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+/*
+** Рекуксивная функция для пребора всех возможных комбинаций листов списка.
+** 
+*/ 
+
+static void ft_swichlst(t_tetr *tetr)
+{
+	
+
+}
+
 int			main(void)
 {
-	char	**board;
-	int		num;
+	char		**board;
+	int			num;
+	t_tetr		*one; 
+	t_tetr		*two;
+	t_tetr		*three;
+	t_tetr		*four;
+	t_tetr		*iter;
 
-	num = 4;
+	num = 3;
+	one = (t_tetr *)malloc(sizeof(t_tetr));
+	two	= (t_tetr *)malloc(sizeof(t_tetr));
+	three = (t_tetr *)malloc(sizeof(t_tetr));
+	four = (t_tetr *)malloc(sizeof(t_tetr));
+	one->ch = 'A';
+	one->tetr_x[0] = 0;
+	one->tetr_x[1] = 1;
+	one->tetr_x[2] = 0;
+	one->tetr_x[3] = 0;
+
+	one->tetr_y[0] = 0;
+	one->tetr_y[1] = 1;
+	one->tetr_y[2] = 1;
+	one->tetr_y[3] = 2;
+	
+	two->ch = 'B';
+	two->tetr_x[0] = 0;
+	two->tetr_x[1] = 0;
+	two->tetr_x[2] = 0;
+	two->tetr_x[3] = 0;
+
+	two->tetr_y[0] = 0;
+	two->tetr_y[1] = 1;
+	two->tetr_y[2] = 2;
+	two->tetr_y[3] = 3;
+
+	three->ch = 'C';
+	three->tetr_x[0] = 0;
+	three->tetr_x[1] = 1;
+	three->tetr_x[2] = 0;
+	three->tetr_x[3] = 1;
+
+	three->tetr_y[0] = 0;
+	three->tetr_y[1] = 0;
+	three->tetr_y[2] = 1;
+	three->tetr_y[3] = 1;
+
+	four->ch = 'D';
+	four->tetr_x[0] = 0;
+	four->tetr_x[1] = 1;
+	four->tetr_x[2] = 0;
+	four->tetr_x[3] = 1;
+
+	four->tetr_y[0] = 0;
+	four->tetr_y[1] = 0;
+	four->tetr_y[2] = 1;
+	four->tetr_y[3] = 1;
+
+	one->next = two;
+	two->next = three;
+	three->next = four;
+	four->next = NULL;
+	
 	board = ft_creatboard(num);
-	ft_infillboard(board, 1, 1);
-	ft_putboard(board);
+	iter = one;
+	while (iter)
+	{
+		if (!ft_infillboard(board, 0, 0, iter))
+		{
+			ft_delboard(board);
+			board = ft_creatboard(++num);
+			iter = one;
+			ft_infillboard(board, 0, 0, iter);
+		}
+		iter = iter->next;
+	}
+	//ft_putnbr(ft_infillboard(board, 0, 0, one));
+	//ft_putnbr(ft_infillboard(board, 0, 0, two));
+	//ft_putnbr(ft_infillboard(board, 0, 0, three));
+	//ft_putnbr(ft_infillboard(board, 0, 0, three));
+	//ft_putboard(board);
 	ft_delboard(board);
 	return (0);
 }
