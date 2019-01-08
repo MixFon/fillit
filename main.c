@@ -18,7 +18,7 @@
 ** Создание новой чистой доски, размерностью nxn.
 */
 
-static char	**ft_creatboard(size_t n)
+static char		**ft_creatboard(size_t n)
 {
 	char	**boa;
 	size_t	i;
@@ -42,7 +42,7 @@ static char	**ft_creatboard(size_t n)
 ** Вывод доски в консоль
 */
 
-static void	ft_putboard(char **board)
+static void		ft_putboard(char **board)
 {
 	while (*board)
 	{
@@ -57,7 +57,7 @@ static void	ft_putboard(char **board)
 ** Нужна проверка на утечки, возможны утечки в цикле.
 */
 
-static void	ft_delboard(char **board)
+static void		ft_delboard(char **board)
 {
 	while (*board)
 	{
@@ -72,7 +72,7 @@ static void	ft_delboard(char **board)
 ** Проверяет, может ли на данное место вставить тетримино 
 */
 
-static int	ft_checktrak(char **board, int start_x, int start_y, t_tetr *tetr)
+static int		ft_checktrak(char **board, int start_x, int start_y, t_tetr *tetr)
 {
 	int		i;
 	int		sum;
@@ -94,7 +94,7 @@ static int	ft_checktrak(char **board, int start_x, int start_y, t_tetr *tetr)
 ** Заполняет доку тeтримино 
 */
 
-static void	ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
+static void		ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
 {
 	int i;
 
@@ -112,7 +112,7 @@ static void	ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
 ** Подсчитывает площадь квадрата. 
 */
 
-static void	ft_calkarea(char **board)
+static void		ft_calkarea(char **board)
 {
 	int area; 
 
@@ -130,7 +130,7 @@ static void	ft_calkarea(char **board)
 **	#.
 */
 
-static int	ft_infillboard(char **board, int start_x, int start_y, t_tetr *tetr)
+static int		ft_infillboard(char **board, t_tetr *tetr)
 {
 	int		j;
 	int		i;
@@ -159,15 +159,72 @@ static int	ft_infillboard(char **board, int start_x, int start_y, t_tetr *tetr)
 /*
 ** Рекуксивная функция для пребора всех возможных комбинаций листов списка.
 ** 
-*/ 
+*/
 
-static void ft_swichlst(t_tetr *tetr)
+/*
+** Функция меняющая два сосдних элементов списка местами
+*/
+
+static t_tetr	*ft_swichlst(t_tetr *tetr)
 {
-	
+	t_tetr *second;
+	t_tetr *first;
 
+	first = tetr;
+	second = tetr->next;
+	first->next = tetr->next->next;
+	second->next = first;
+	return (second);
 }
 
-int			main(void)
+/*
+** Функция перебираюая возможные варианты и выподит информация в консоль
+*/
+
+static void		ft_allvar(char **board, t_tetr *tetr)
+{
+	int		num;
+	int		i;
+	t_tetr	*iter;
+	t_tetr	*first;
+
+	num = 4;
+	i = 1;
+	first = tetr;
+	iter = tetr;
+	while (i < 6)
+	{
+		ft_putnbr(i);
+		ft_putstr("l\n");
+		while (iter) 
+		{
+			if (!ft_infillboard(board, iter))
+			{
+				ft_delboard(board);
+				board = ft_creatboard(++num);
+				iter = tetr;
+				ft_infillboard(board, iter);
+			}
+			iter = iter->next;
+		}
+		if (i%2 != 0)
+		{
+			iter = ft_swichlst(first);
+			first = iter;
+		} 
+		else
+		{
+			iter = ft_swichlst(first->next);
+			first = iter;
+		} 
+		num = 4;
+		ft_delboard(board);
+		board = ft_creatboard(num);
+		i++;
+	}
+}
+
+int				main(void)
 {
 	char		**board;
 	int			num;
@@ -177,7 +234,7 @@ int			main(void)
 	t_tetr		*four;
 	t_tetr		*iter;
 
-	num = 3;
+	num = 4;
 	one = (t_tetr *)malloc(sizeof(t_tetr));
 	two	= (t_tetr *)malloc(sizeof(t_tetr));
 	three = (t_tetr *)malloc(sizeof(t_tetr));
@@ -228,27 +285,16 @@ int			main(void)
 
 	one->next = two;
 	two->next = three;
-	three->next = four;
-	four->next = NULL;
-	
+	three->next = NULL;
+	//four->next = NULL;
+
 	board = ft_creatboard(num);
-	iter = one;
-	while (iter)
-	{
-		if (!ft_infillboard(board, 0, 0, iter))
-		{
-			ft_delboard(board);
-			board = ft_creatboard(++num);
-			iter = one;
-			ft_infillboard(board, 0, 0, iter);
-		}
-		iter = iter->next;
-	}
+	ft_allvar(board, one);
 	//ft_putnbr(ft_infillboard(board, 0, 0, one));
 	//ft_putnbr(ft_infillboard(board, 0, 0, two));
 	//ft_putnbr(ft_infillboard(board, 0, 0, three));
 	//ft_putnbr(ft_infillboard(board, 0, 0, three));
-	//ft_putboard(board);
+	ft_putboard(board);
 	ft_delboard(board);
 	return (0);
 }
