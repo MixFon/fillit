@@ -13,7 +13,6 @@
 #include "libft_last_ver/libft.h"
 #include "fillit.h"
 
-
 /*
 ** Создание новой чистой доски, размерностью nxn.
 */
@@ -24,7 +23,7 @@ static char		**ft_creatboard(size_t n)
 	size_t	i;
 
 	i = 0;
-	if (!(board = (char **)malloc(sizeof(char *) * (n + 9))))
+	if (!(board = (char **)malloc(sizeof(char *) * (n + 1))))
 		return (NULL);
 	while (i < n)
 	{
@@ -175,11 +174,9 @@ void	ft_putlst(t_tetr *lst)
 	while (iter)
 	{
 		ft_putchar(iter->ch);
-	//	write(1, &iter->ch, 1);
 		iter = iter->next;
 	}
 	ft_putstr("\n");
-	//write(1, "\n", 1);
 }
 
 /*
@@ -197,7 +194,8 @@ t_tetr	*ft_searchlst(t_tetr *lst, char ch)
 }
 
 /*
-** Меняет содержимое листов местами
+** Меняет содержимое листов местами.
+** Возможно ли не перезаписывать поля листа, а менять указатели?
 */
 
 void	ft_swapvallst(t_tetr *lsta, t_tetr *lstb)
@@ -266,20 +264,58 @@ static void	ft_runlst(char **board, t_tetr *lst)
 }	
 
 /*
+** Подсчет колличества элементов скиска, для нахождение всех
+** вариантов перебора.
+*/
+
+static int	ft_numberlst(t_tetr *lst)
+{
+	t_tetr	*iter;
+	int		num;
+
+	if (!lst)
+		return (0);
+	num = 0;
+	iter = lst;
+	while (iter)
+	{
+		num++;
+		iter = iter->next;	
+	}
+	return (num);
+}
+
+/*
+** Высчитываем начальный размер доски.
+*/
+
+static int	ft_startsizeboard(t_tetr *lst)
+{
+	int	len;
+	int	numlst;
+
+	numlst = ft_numberlst(lst);
+	len = 2;
+	while (len * len < numlst * 4)
+		len++;
+	return (len);
+}
+
+/*
 ** Backtracing (Рекурися с возвратом) перебор всех вариантов.
 */
 
-void	ft_allvarlst(t_tetr *lst, int l, int r)
+static void	ft_allvarlst(t_tetr *lst, int l, int r)
 {
 	int		i;
-	static int		j = 0;
+	static int		j = 0; //Убрать!
 	char	**board;
 
-	board = ft_creatboard(4);
+	board = ft_creatboard(ft_startsizeboard(lst));
 	if (l == r)
 	{
-		ft_putnbr(++j);
-		ft_putstr("\n");
+		ft_putnbr(++j);	//Delete
+		ft_putstr("\n");//Delete
 		ft_runlst(board, lst);
 	}
 	else 
@@ -300,7 +336,7 @@ void	ft_allvarlst(t_tetr *lst, int l, int r)
 ** Может и не понадобится 
 */
 
-static int		ft_factorial(int nb)
+static int	ft_factorial(int nb)
 {
 	int i;
 	int a;
@@ -320,27 +356,6 @@ static int		ft_factorial(int nb)
 	return (a);
 }
 
-/*
-** Подсчет колличества элементов скиска, для подстановки в факториал и 
-** нахождение всех вариантов перебора.
-*/
-
-static int	ft_numberlst(t_tetr *lst)
-{
-	t_tetr	*iter;
-	int		num;
-
-	if (!lst)
-		return (0);
-	num = 0;
-	iter = lst;
-	while (iter)
-	{
-		num++;
-		iter = iter->next;	
-	}
-	return (num);
-}
 
 int		main(void)
 {
@@ -349,12 +364,14 @@ int		main(void)
 	t_tetr		*two;
 	t_tetr		*three;
 	t_tetr		*four;
+	t_tetr		*five;
 	//t_tetr		*iter;
 
 	one = (t_tetr *)malloc(sizeof(t_tetr));
 	two	= (t_tetr *)malloc(sizeof(t_tetr));
 	three = (t_tetr *)malloc(sizeof(t_tetr));
 	four = (t_tetr *)malloc(sizeof(t_tetr));
+	five = (t_tetr *)malloc(sizeof(t_tetr));
 	one->ch = 'A';
 	one->tetr_x[0] = 0;
 	one->tetr_x[1] = 1;
@@ -399,10 +416,21 @@ int		main(void)
 	four->tetr_y[2] = 1;
 	four->tetr_y[3] = 1;
 
+	five->ch = 'E';
+	five->tetr_x[0] = 0;
+	five->tetr_x[1] = 1;
+	five->tetr_x[2] = 0;
+	five->tetr_x[3] = 0;
+
+	five->tetr_y[0] = 0;
+	five->tetr_y[1] = 1;
+	five->tetr_y[2] = 1;
+	five->tetr_y[3] = 2;
 	one->next = two;
 	two->next = three;
-	three->next = NULL;
-	//four->next = NULL;
+	three->next = four;
+	four->next = five;
+	five->next = NULL;
 	/*ft_swaplst(one, 'A', 'A');
 	ft_putlst(one);
 	ft_swaplst(one, 'C', 'D');
