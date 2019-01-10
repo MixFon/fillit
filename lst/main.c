@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/09 12:48:13 by widraugr          #+#    #+#             */
-/*   Updated: 2019/01/09 16:14:14 by widraugr         ###   ########.fr       */
+/*   Updated: 2019/01/09 16:38:52 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 ** Печатает лист все листы
 */
 
-void	ft_putlst(t_tetr *lst)
+static void	ft_putlst(t_tetr *lst)
 {
 	t_tetr *iter;
 
@@ -35,7 +35,7 @@ void	ft_putlst(t_tetr *lst)
 ** Ищет лист соответствующий симаволу и возвращает его
 */
 
-t_tetr	*ft_searchlst(t_tetr *lst, char ch)
+static t_tetr	*ft_searchlst(t_tetr *lst, char ch)
 {
 	t_tetr	*iter;
 
@@ -49,7 +49,7 @@ t_tetr	*ft_searchlst(t_tetr *lst, char ch)
 ** Меняет содержимое листов местами
 */
 
-void	ft_swapvallst(t_tetr *lsta, t_tetr *lstb)
+static void	ft_swapvallst(t_tetr *lsta, t_tetr *lstb)
 {
 	char	c;
 	int		i;
@@ -75,7 +75,7 @@ void	ft_swapvallst(t_tetr *lsta, t_tetr *lstb)
 ** Меняет местами два элемента листа местами
 */
 
-void	ft_swaplst(t_tetr *lst, char a, char b)
+static void	ft_swaplst(t_tetr *lst, char a, char b)
 {
 	t_tetr	*lsta;
 	t_tetr	*lstb;
@@ -89,7 +89,7 @@ void	ft_swaplst(t_tetr *lst, char a, char b)
 ** Меняет местами два элемента листа местами
 */
 
-void	ft_allvarlst(t_tetr *lst, int l, int r)
+static void	ft_allvarlst(t_tetr *lst, int l, int r)
 {
 	int	i;
 

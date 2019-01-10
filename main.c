@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/28 13:22:57 by widraugr          #+#    #+#             */
-/*   Updated: 2019/01/09 16:33:24 by widraugr         ###   ########.fr       */
+/*   Updated: 2019/01/10 15:44:22 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,22 @@
 
 static char		**ft_creatboard(size_t n)
 {
-	char	**boa;
+	char	**board;
 	size_t	i;
 
 	i = 0;
-	if (!(boa = (char **)malloc(sizeof(char *) * (n + 9))))
+	if (!(board = (char **)malloc(sizeof(char *) * (n + 9))))
 		return (NULL);
 	while (i < n)
 	{
-		if (!(boa[i] = (char *)malloc(sizeof(char) * (n + 1))))
+		if (!(board[i] = (char *)malloc(sizeof(char) * (n + 1))))
 			return (NULL);
-		boa[i] = (char *)ft_memset(boa[i], '.', n);
-		boa[i][n] = '\0';
+		board[i] = (char *)ft_memset(board[i], '.', n);
+		board[i][n] = '\0';
 		i++;
 	}
-	boa[i] = NULL;
-	return (boa);
+	board[i] = NULL;
+	return (board);
 }
 
 /*
@@ -92,6 +92,7 @@ static int		ft_checktrak(char **board, int start_x, int start_y, t_tetr *tetr)
 
 /*
 ** Заполняет доку тeтримино (буквами)
+** Печатал каждый раз символ который заполнял
 */
 
 static void		ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
@@ -103,8 +104,8 @@ static void		ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
 	{
 		board[start_y + tetr->tetr_y[i]][start_x + tetr->tetr_x[i]] = tetr->ch;
 		i++;
-		ft_putboard(board);
-		ft_putstr("\n");
+		//ft_putboard(board);
+		//ft_putstr("\n");
 	}
 }
 
@@ -212,11 +213,11 @@ void	ft_swapvallst(t_tetr *lsta, t_tetr *lstb)
 	while (i < 4)
 	{
 		temp = lsta->tetr_x[i];
-		lstb->tetr_x[i] = lsta->tetr_x[i];
-		lsta->tetr_x[i] = temp;
+		lsta->tetr_x[i] = lstb->tetr_x[i];
+		lstb->tetr_x[i] = temp;
 		temp = lsta->tetr_y[i];
-		lstb->tetr_y[i] = lsta->tetr_y[i];
-		lsta->tetr_y[i] = temp;
+		lsta->tetr_y[i] = lstb->tetr_y[i];
+		lstb->tetr_y[i] = temp;
 		i++;
 	}
 }
@@ -236,15 +237,51 @@ void	ft_swaplst(t_tetr *lst, char a, char b)
 }
 
 /*
+** Пробегает по списку тетримино и по очереди пытается заполнит тетримино
+** на доску.
+*/
+
+static void	ft_runlst(char **board, t_tetr *lst)
+{
+	t_tetr	*iter;
+	int		num;
+
+	num = 4;
+	iter = lst;
+	while (iter)
+	{
+		if (!ft_infillboard(board, iter))
+		{
+			ft_delboard(board);
+			board = ft_creatboard(++num);
+			iter = lst;
+			ft_infillboard(board, iter);
+		}
+		iter = iter->next;
+	}
+	ft_putboard(board);
+	ft_putstr("\n");
+	ft_delboard(board);
+	//board = ft_creatboard(4);
+}	
+
+/*
 ** Backtracing (Рекурися с возвратом) перебор всех вариантов.
 */
 
 void	ft_allvarlst(t_tetr *lst, int l, int r)
 {
-	int	i;
+	int		i;
+	static int		j = 0;
+	char	**board;
 
+	board = ft_creatboard(4);
 	if (l == r)
-		ft_putlst(lst);
+	{
+		ft_putnbr(++j);
+		ft_putstr("\n");
+		ft_runlst(board, lst);
+	}
 	else 
 	{
 		i = l;
@@ -258,8 +295,56 @@ void	ft_allvarlst(t_tetr *lst, int l, int r)
 	}
 }
 
+/*
+** Вычисление факториала, для нахождения колличества возможных вариантов
+** Может и не понадобится 
+*/
+
+static int		ft_factorial(int nb)
+{
+	int i;
+	int a;
+
+	i = 1;
+	a = 1;
+	if (nb == 1)
+		return (1);
+	else	if (nb <= 0)
+		return (0);
+	else
+		while (i <= nb)
+		{
+			a = i * a;
+			i++;
+		}
+	return (a);
+}
+
+/*
+** Подсчет колличества элементов скиска, для подстановки в факториал и 
+** нахождение всех вариантов перебора.
+*/
+
+static int	ft_numberlst(t_tetr *lst)
+{
+	t_tetr	*iter;
+	int		num;
+
+	if (!lst)
+		return (0);
+	num = 0;
+	iter = lst;
+	while (iter)
+	{
+		num++;
+		iter = iter->next;	
+	}
+	return (num);
+}
+
 int		main(void)
 {
+	//char		**board;
 	t_tetr		*one; 
 	t_tetr		*two;
 	t_tetr		*three;
@@ -316,27 +401,16 @@ int		main(void)
 
 	one->next = two;
 	two->next = three;
-	three->next = four;
-	four->next = NULL;
+	three->next = NULL;
+	//four->next = NULL;
 	/*ft_swaplst(one, 'A', 'A');
 	ft_putlst(one);
 	ft_swaplst(one, 'C', 'D');
 	ft_putlst(one);
 	*/
-	ft_allvarlst(one, 0, 3);
+	ft_allvarlst(one, 0, ft_numberlst(one) - 1);
 	return (0);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 int				main(void)
