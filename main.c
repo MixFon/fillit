@@ -188,7 +188,8 @@ t_tetr	*ft_searchlst(t_tetr *lst, char ch)
 }
 
 /*
-** Меняет содержимое листов местами
+** Меняет содержимое листов местами.
+** Возможно ли не перезаписывать поля листа, а менять указатели?
 */
 
 void	ft_swapvallst(t_tetr *lsta, t_tetr *lstb)
@@ -251,6 +252,7 @@ static int	ft_numberlst(t_tetr *lst)
 }
 	
 /*
+<<<<<<< HEAD
 ** Вычислкние стартового размера доски
 */
 
@@ -264,6 +266,73 @@ static int	ft_startsizeboard(t_tetr *lst)
 	while ((len * len) < (numberlst * 4))
 		len++;
 	return (len);
+=======
+** Подсчет колличества элементов скиска, для нахождение всех
+** вариантов перебора.
+*/
+
+static int	ft_numberlst(t_tetr *lst)
+{
+	t_tetr	*iter;
+	int		num;
+
+	if (!lst)
+		return (0);
+	num = 0;
+	iter = lst;
+	while (iter)
+	{
+		num++;
+		iter = iter->next;	
+	}
+	return (num);
+}
+
+/*
+** Высчитываем начальный размер доски.
+*/
+
+static int	ft_startsizeboard(t_tetr *lst)
+{
+	int	len;
+	int	numlst;
+
+	numlst = ft_numberlst(lst);
+	len = 2;
+	while (len * len < numlst * 4)
+		len++;
+	return (len);
+}
+
+/*
+** Backtracing (Рекурися с возвратом) перебор всех вариантов.
+*/
+
+static void	ft_allvarlst(t_tetr *lst, int l, int r)
+{
+	int		i;
+	static int		j = 0; //Убрать!
+	char	**board;
+
+	board = ft_creatboard(ft_startsizeboard(lst));
+	if (l == r)
+	{
+		ft_putnbr(++j);	//Delete
+		ft_putstr("\n");//Delete
+		ft_runlst(board, lst);
+	}
+	else 
+	{
+		i = l;
+		while (i <= r)
+		{
+			ft_swaplst(lst, 'A' + l, 'A' + i);
+			ft_allvarlst(lst, l + 1, r);
+			ft_swaplst(lst, 'A' + l, 'A' + i);
+			i++;
+		}
+	}
+>>>>>>> 98a1fb3483bd2e36891a8a211ec4235966928b76
 }
 
 /*
@@ -271,7 +340,7 @@ static int	ft_startsizeboard(t_tetr *lst)
 ** Может и не понадобится 
 */
 
-static int		ft_factorial(int nb)
+static int	ft_factorial(int nb)
 {
 	int i;
 	int a;
@@ -291,6 +360,7 @@ static int		ft_factorial(int nb)
 	return (a);
 }
 
+<<<<<<< HEAD
 /*
 ** Копирование двух досок
 */
@@ -388,6 +458,8 @@ static void	ft_allvarlst(t_tetr *lst, int l, int r)
 		}
 	}
 }
+=======
+>>>>>>> 98a1fb3483bd2e36891a8a211ec4235966928b76
 
 int		main(void)
 {
@@ -397,7 +469,10 @@ int		main(void)
 	t_tetr		*three;
 	t_tetr		*four;
 	t_tetr		*five;
+<<<<<<< HEAD
 	t_tetr		*six;
+=======
+>>>>>>> 98a1fb3483bd2e36891a8a211ec4235966928b76
 	//t_tetr		*iter;
 
 	one = (t_tetr *)malloc(sizeof(t_tetr));
@@ -405,7 +480,10 @@ int		main(void)
 	three = (t_tetr *)malloc(sizeof(t_tetr));
 	four = (t_tetr *)malloc(sizeof(t_tetr));
 	five = (t_tetr *)malloc(sizeof(t_tetr));
+<<<<<<< HEAD
 	six = (t_tetr *)malloc(sizeof(t_tetr));
+=======
+>>>>>>> 98a1fb3483bd2e36891a8a211ec4235966928b76
 	one->ch = 'A';
 	one->tetr_x[0] = 0;
 	one->tetr_x[1] = 1;
@@ -460,6 +538,7 @@ int		main(void)
 	five->tetr_y[1] = 1;
 	five->tetr_y[2] = 1;
 	five->tetr_y[3] = 2;
+<<<<<<< HEAD
 	
 	six->ch = 'F';
 	six->tetr_x[0] = 0;
@@ -479,6 +558,13 @@ int		main(void)
 	five->next = six;
 	six->next = NULL;*/
 	//four->next = NULL;
+=======
+	one->next = two;
+	two->next = three;
+	three->next = four;
+	four->next = five;
+	five->next = NULL;
+>>>>>>> 98a1fb3483bd2e36891a8a211ec4235966928b76
 	/*ft_swaplst(one, 'A', 'A');
 	ft_putlst(one);
 	ft_swaplst(one, 'C', 'D');
