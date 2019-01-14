@@ -98,7 +98,7 @@ static int	ft_startsizeboard(t_tetr *lst)
 	int	len;
 	int numberlst;
 
-	len = 22
+	len = 2;
 	numberlst = ft_numberlst(lst);
 	while ((len * len) < (numberlst * 4))
 		len++;
@@ -120,7 +120,8 @@ static int		ft_checktrak(char **board, int start_x, int start_y, t_tetr *tetr)
 		return (0);
 	while (i < 4)
 	{
-		if (start_y + tetr->tetr_y[i] >= sum || start_x + tetr->tetr_x[i] >= sum)
+		if (start_y + tetr->tetr_y[i] >= sum || start_x + tetr->tetr_x[i] >= sum
+			|| start_y + tetr->tetr_y[i] < 0 || start_x + tetr->tetr_x[i] < 0)
 			return (0);
 		if (board[start_y + tetr->tetr_y[i]][start_x + tetr->tetr_x[i]] != '.')
 			return (0);
