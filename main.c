@@ -98,7 +98,7 @@ static int	ft_startsizeboard(t_tetr *lst)
 	int	len;
 	int numberlst;
 
-	len = 4;
+	len = 22
 	numberlst = ft_numberlst(lst);
 	while ((len * len) < (numberlst * 4))
 		len++;
