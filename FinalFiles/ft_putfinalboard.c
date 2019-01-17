@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/28 13:22:57 by widraugr          #+#    #+#             */
-/*   Updated: 2019/01/14 16:36:04 by widraugr         ###   ########.fr       */
+/*   Updated: 2019/01/17 12:24:23 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void		ft_delboard(char **board)
 		ft_strdel(board);
 		board++;
 	}
-	//free(board);
 	board = NULL;
 }
 
@@ -32,10 +31,10 @@ void		ft_delboard(char **board)
 ** Calculation of the starting size.
 */
 
-int	ft_startsizeboard(t_tetr *lst)
+int			ft_startsizeboard(t_tetr *lst)
 {
 	int	len;
-	int numberlst;
+	int	numberlst;
 
 	len = 2;
 	numberlst = ft_numberlst(lst);
@@ -43,7 +42,6 @@ int	ft_startsizeboard(t_tetr *lst)
 		len++;
 	return (len);
 }
-
 
 /*
 ** Create new board size nxn
@@ -61,7 +59,7 @@ char		**ft_creatboard(size_t n)
 	{
 		if (!(board[i] = (char *)malloc(sizeof(char) * (n + 1))))
 			return (NULL);
-		board[i] = (char *)ft_memset(board[i], '.', n);
+		board[i] = (char *)ft_memset((char *)board[i], '.', n);
 		board[i][n] = '\0';
 		i++;
 	}
@@ -83,17 +81,20 @@ void		ft_putboard(char **board)
 	}
 }
 
-
-void	ft_putfinalboard(t_tetr *one)
+void		ft_putfinalboard(t_tetr *one)
 {
 	char	**board;
-	int sum = ft_startsizeboard(one);
+	int		sum;
 
+	sum = ft_startsizeboard(one);
 	board = ft_creatboard(sum);
 	while (!ft_recrunlst(board, one))
 	{
 		ft_delboard(board);
+		free(board);
 		board = ft_creatboard(++sum);
 	}
 	ft_putboard(board);
+	ft_delboard(board);
+	free(board);
 }

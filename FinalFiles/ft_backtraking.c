@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_backtraking.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/16 14:34:07 by widraugr          #+#    #+#             */
+/*   Updated: 2019/01/16 14:35:14 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fillit.h"
 
 /*
 ** Calculatest the namber of list.
 */
 
-int	ft_numberlst(t_tetr *lst)
+int		ft_numberlst(t_tetr *lst)
 {
 	t_tetr	*iter;
 	int		num;
@@ -50,7 +62,7 @@ int		ft_checktrak(char **board, int start_x, int start_y, t_tetr *tetr)
 ** Fills the board with tetraminos. (Characters)
 */
 
-void		ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
+void	ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
 {
 	int i;
 
@@ -66,7 +78,7 @@ void		ft_infilltetr(char **board, int start_x, int start_y, t_tetr *tetr)
 ** Removes tetraminos from the board.
 */
 
-void		ft_deltetr(char **board, int start_x, int start_y, t_tetr *tetr)
+void	ft_deltetr(char **board, int start_x, int start_y, t_tetr *tetr)
 {
 	int i;
 
@@ -82,7 +94,7 @@ void		ft_deltetr(char **board, int start_x, int start_y, t_tetr *tetr)
 ** All combinations. (Backtraking).
 */
 
-int	ft_recrunlst(char **board, t_tetr *lst)
+int		ft_recrunlst(char **board, t_tetr *lst)
 {
 	int		i;
 	int		j;

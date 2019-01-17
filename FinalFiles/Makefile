@@ -1,18 +1,38 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: widraugr <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/01/17 12:23:41 by widraugr          #+#    #+#              #
+#    Updated: 2019/01/17 15:51:08 by widraugr         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = fillit
 
-CFILES = check_file.c ft_backtraking.c ft_concat_str.c ft_putfinalboard.c get_coords.c main.c valid_tetrimino.c libft/*.c
+LIB_FILE = libft.a
 
+CFILES = check_file.c ft_backtraking.c ft_concat_str.c ft_putfinalboard.c get_coords.c main.c valid_tetrimino.c
+
+OFILES = check_file.o ft_backtraking.o ft_concat_str.o ft_putfinalboard.o get_coords.o main.o valid_tetrimino.o
 FLAGS = -Wall -Wextra -Werror
 
-HFILE = -I. -I./libft/libft.h
+HFILE = -I.
 
-all:
-	gcc $(FLAGS) $(HFILES) -c $(CFILES)
-	gcc $(FLAFS) *.o -o $(NAME)
+all: $(NAME)
+
+$(NAME):
+	make re -C ./libft
+	gcc -g $(FLAGS) $(HFILES) -c $(CFILES) 
+	gcc -g $(FLAFS) $(OFILES) -L./libft -lft -o $(NAME)
+	make fclean -C ./libft 
 
 clean: 
-	/bin/rm -f *.o
+	/bin/rm -f $(OFILES)
 
 fclean: clean
 	/bin/rm -f $(NAME)
 
+re: fclean all
